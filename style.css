@@ -1,0 +1,373 @@
+/* Base & Structural Elements */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #fdfdfd;
+  color: rgb(54, 54, 54);
+  margin: 0;
+  font-size: 1em;
+}
+
+h1, h2, h3, h4, h5 {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 24px;
+  font-size: 2.2em;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin-top: 64px;
+  margin-bottom: 24px;
+  font-weight: bold !important;
+}
+
+h1, h2, h3, h4, h5, a, p, span, body {
+  font-weight: normal;
+  font-family: "Inter", sans-serif;
+}
+
+p {
+  line-height: 1.4em;
+  text-align: justify;
+}
+
+.hr {
+  width: 85%;
+  height: 1px;
+  margin: 72px auto;
+  background: linear-gradient(to right, transparent, #d8dbe0, transparent);
+}
+
+
+/* Header & Navigation */
+.header {
+  background: radial-gradient(ellipse 90% 80% at 50% 0%, #ebf3fc 0%, #fdfdfd 70%);
+  width: 100%;
+  padding-top: 48px;
+  padding-bottom: 32px;
+}
+
+/* Links & Buttons */
+a, h2 {
+  color: #0052CC;
+  text-decoration: none;
+}
+
+a {
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: #0066FF;
+}
+
+.links {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+  padding-top: 8px;
+}
+
+.links a {
+  margin-left: 8px;
+}
+
+a.btn {
+  display: inline-block;
+  min-width: 70px;
+  font-family: "Inter", sans-serif;
+  background-color: rgb(36, 36, 36);
+  color: white;
+  padding: 9px 20px;
+  font-size: 1.05em;
+  font-weight: 500;
+  border-radius: 32px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.08);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+a.btn:hover {
+  background-color: rgb(20, 20, 20);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 6px 14px rgba(0,0,0,0.12);
+}
+
+a.btn-disabled {
+  background-color: rgb(200, 200, 200) !important;
+  color: rgb(240, 240, 240) !important;
+  pointer-events: none;
+  box-shadow: none !important;
+}
+
+/* Main Layout Content */
+.content {
+  max-width: 960px;
+  margin: auto;
+  margin-top: 48px;
+  margin-bottom: 64px;
+}
+
+.abstract {
+  max-width: 600px;
+  margin: auto;
+}
+
+.figure-caption {
+  margin: auto;
+  max-width: 95%;
+  margin-top: 40px;
+  margin-bottom: 28px;
+}
+
+/* Teaser Video Grid */
+.teaser-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  max-width: 960px;
+  margin: 0 auto 10px;
+}
+
+.teaser-grid video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.teaser-note {
+  text-align: center;
+  font-size: 0.85em;
+  color: rgb(125, 125, 125);
+  font-style: italic;
+  margin: 0 auto 24px;
+  padding: 0 16px;
+}
+
+/* Functional Grasping: Conditioning Modes Layout */
+.conditioning_modes {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.conditioning_mode {
+  flex: 1 1 260px;
+  min-width: 240px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.conditioning_mode-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.conditioning_mode-row video {
+  width: 48%;
+  max-width: 145px;
+  height: auto;
+  border-radius: 3px;
+  display: block;
+}
+
+.conditioning_mode-name {
+  margin-top: 12px;
+  font-size: 1.05em;
+}
+
+/* Long Horizon Demonstration Layout Blocks */
+.long-horizon-flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+}
+
+.long-horizon-flex-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;    
+  text-align: center;     
+}
+
+.long-horizon-flex-card.aspect-4-3 { 
+  flex: 3; 
+}
+
+.long-horizon-flex-card.aspect-16-9 { 
+  flex: 4; 
+}
+
+.conditioning-media {
+  width: 100%;
+  position: relative;
+  display: block;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.aspect-4-3 .conditioning-media { 
+  aspect-ratio: 4 / 3; 
+}
+
+.aspect-16-9 .conditioning-media { 
+  aspect-ratio: 16 / 9; 
+}
+
+.conditioning-media img,
+.conditioning-media video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Closed Loop Task System Grids */
+.closed-loop-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 32px auto;
+  max-width: 820px;
+}
+
+.closed-loop-task {
+  text-align: center;
+}
+
+.closed-loop-task-name {
+  font-size: 0.95em;
+  color: rgb(60, 60, 60);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.rollout-domain {
+  font-weight: 400;
+  color: rgb(130, 130, 130);
+  margin-left: 4px;
+}
+
+.closed-loop-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.closed-loop-side {
+  flex: 1;
+  max-width: 240px;
+}
+
+.closed-loop-side video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+/* Authors Table Layout */
+table.authors {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+table.authors a {
+  padding: 6px 0;
+  display: inline-block;
+  font-weight: normal;
+  font-size: 1.3em;
+}
+
+/* Paper Grid Thumbnails & Citation Layout */
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px auto;
+}
+
+.page {
+  width: 96px;
+  height: 124px;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.bibtexsection {
+  padding: 4px 16px;
+  font-family: "Courier", monospace;
+  font-size: 15px;
+  white-space: pre;
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+/* Typography, Weight & Design Colors */
+.nobreak { 
+  white-space: nowrap; 
+}
+
+.bold { 
+  font-weight: bold; 
+}
+
+.italic { 
+  font-style: italic; 
+}
+
+.blue { 
+  color: #0052CC; 
+}
+
+/* Footer Element */
+footer {
+  background-color: #efeff3;
+  width: 100%;
+  margin-top: 32px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  text-align: center;
+}
+.long-horizon-youtube {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%;
+    height: 0;
+    margin-top: 0.75em;
+}
+
+.long-horizon-youtube.aspect-16-9 {
+    padding-bottom: 56.25%;
+}
+
+.long-horizon-youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}

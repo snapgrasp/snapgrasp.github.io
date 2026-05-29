@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNAP: One-Shot Dexterous Manipulation via Functional Grasping Policies</title>
+    <meta property="og:title" content="SNAP: One-Shot Dexterous Manipulation via Functional Grasping Policies">
+    <meta property="og:description" content="We present SNAP, a framework that achieves spatial and object generalization for complex, functional dexterous tasks using only a single human demonstration via functional grasping policies.">
+    <link rel="stylesheet" href="style.css?v=0.8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript">
+        function toggle(id, btnId, showText, hideText) {
+            var e = document.getElementById(id);
+            var willShow = e.style.display != 'block';
+            e.style.display = willShow ? 'block' : 'none';
+            if(btnId) {
+                var btn = document.getElementById(btnId);
+                btn.textContent = willShow ? hideText : showText;
+            }
+        }
+
+        // JavaScript Intersection Observer to Lazy Load Videos when they enter the viewport
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
+
+            if ("IntersectionObserver" in window) {
+                var lazyVideoObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(video) {
+                        if (video.isIntersecting) {
+                            for (var source in video.target.children) {
+                                var videoSource = video.target.children[source];
+                                if (typeof videoSource.tagName === "string" && videoSource.tagName === "SOURCE") {
+                                    videoSource.src = videoSource.dataset.src;
+                                }
+                            }
+                            video.target.load();
+                            video.target.classList.remove("lazy");
+                            lazyVideoObserver.unobserve(video.target);
+                        }
+                    });
+                });
+
+                lazyVideos.forEach(function(lazyVideo) {
+                    lazyVideoObserver.observe(lazyVideo);
+                });
+            }
+        });
+    </script>
+    <style>
+        a.long-horizon-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #0052CC;
+        }
+        a.long-horizon-link:hover {
+            color: #0066FF;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header" id="top">
+    <div style="padding-bottom: 32px; text-align: center;">
+        <a href="https://openreview.net/forum?id=5zEr48929G">View on OpenReview</a>
+    </div>
+    <h1>SNAP: One-Shot Dexterous Manipulation via<br/>Functional Grasping Policies</h1>
+    <table class="authors">
+        <tbody>
+            <tr>
+                <td>
+                    <h4>
+                        <a href="https://snap-grasp.github.io" class="nobreak">Anonymous Authors</a>&ensp;
+                        <br /> Paper ID #330
+                    </h4>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3><a href="https://openreview.net/forum?id=5zEr48929G" class="bold default-color">CoRL 2026 Submission</a><br/></h3>
+    <div class="links">
+        <a href="https://openreview.net/forum?id=5zEr48929G" class="btn"><i class="fa fa-link"></i>&ensp;OpenReview</a>
+        <a href="https://www.youtube.com/watch?v=XUaK_ho4XIg&list=PLkYO48SUils5tnNXPNru5_ZJlkN2va9Wx" class="btn"><i class="fa fa-youtube-play"></i>&ensp;Demos</a>
+        <a href="#" class="btn btn-disabled"><i class="fa fa-cogs"></i>&ensp;Checkpoints</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="teaser-grid">
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/chopsticks.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/screwdriver.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/card.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/book.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/knife.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/hammer.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/spam.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/sharpa_teaser/redbull.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/small_mug.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/eraser.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/drill.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/pen_cap.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/small_screwdriver.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/heat.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/philz.mp4" type="video/mp4"></video>
+        <video autoplay loop muted playsinline preload="metadata"><source src="videos/teaser/xhand_teaser/syringe_v2.mp4" type="video/mp4"></video>
+    </div>
+    <div class="teaser-note">Functional grasps generated by our policies. <span class="italic">(Top)</span> Sharpa grasping policy. <span class="italic">(Bottom)</span> XHand grasping policy. All videos are at 2x speed.</div>
+
+    <div style="margin: auto;">
+        <p>
+            <span class="bold blue">Learning from One Demonstration.</span> Humans quickly adapt their motions to the functional demands of unseen tasks, generalizing across objects and spatial configurations from <span class="italic">a single demonstration</span>. Can robots do the same, without large-scale datasets? We propose <span class="bold">SNAP</span>, a framework that achieves spatial and object generalization for complex, functional dexterous tasks from a single human demonstration using functional grasping policies.
+        </p>
+    </div>
+
+    <div class="hr"></div>
+
+    <div>
+        <h2>Abstract</h2>
+        <p class="abstract">
+            Achieving human-level generalization across unseen objects and spatial configurations remains a central challenge in robotics. While such generalization is frequently enabled by training on large-scale teleoperation datasets, synthesizing training data from a small number of episodes has emerged as a promising direction to reduce the burden of data collection. In this work, we present SNAP, a framework that achieves spatial and object generalization for complex, functional dexterous tasks using only <em>a single</em> human demonstration. We train a low-level grasping policy conditioned on <em>four signals</em>: grasp template, segmented point cloud, wrist orientation, and keypoint. We then utilize this policy to augment the grasp trajectory of a single real-world demonstration with diverse object geometries and poses. We evaluate our data augmentation approach on three challenging real-world tasks (pen writing, mug on peg, dispense syringe) and validate our functional grasping policy extensively in simulation.
+        </p>
+    </div>
+
+    <div class="hr"></div>
+
+    <div>
+        <h2>Functional Grasping</h2>
+        <div class="figure-caption">
+            <span class="bold blue">Long-Horizon Grasping.</span> We evaluate our grasping policies across two hands (XHand and Sharpa). The videos below are at 25x speed. See the YouTube links for slower 2x speed videos.
+        </div>
+        <div class="long-horizon-flex-container">
+            <div class="long-horizon-flex-card aspect-4-3">
+                <div class="conditioning_mode-name">
+                    <span class="bold" style="font-size: 1.2em;">Sharpa Chopsticks</span><br>
+                    15 grasps | 6 objects<br>
+                    Success Rate: <span class="bold">9 / 15</span>
+                </div>
+                <div class="conditioning-media">
+                    <video autoplay loop muted playsinline class="lazy">
+                        <source data-src="videos/long_horizon/sharpa_chopsticks_trim.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="conditioning-media">
+                    <img src="videos/long_horizon/sharpa_chopsticks.png" alt="Sharpa Chopsticks still" loading="lazy">
+                </div>
+                <div class="long-horizon-youtube">
+                    <iframe src="https://www.youtube.com/embed/uLFgM-d8xVM?si=UepcK8yV0Qi2Pw9X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="long-horizon-flex-card aspect-16-9">
+                <div class="conditioning_mode-name">
+                    <span class="bold" style="font-size: 1.2em;">XHand Functional Grasping</span><br>
+                    36 grasps | 32 objects<br>
+                    Success Rate: <span class="bold">33 / 36</span>
+                </div>
+                <div class="conditioning-media">
+                    <video autoplay loop muted playsinline class="lazy">
+                        <source data-src="videos/long_horizon/xhand_fg_trim.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="conditioning-media">
+                    <img src="videos/long_horizon/xhand_fg.png" alt="XHand Functional Grasping still" loading="lazy">
+                </div>
+                <div class="long-horizon-youtube aspect-16-9">
+                    <iframe src="https://www.youtube.com/embed/XUaK_ho4XIg?si=tZKjGpVyz_IK3ie2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="long-horizon-flex-card aspect-4-3">
+                <div class="conditioning_mode-name">
+                    <span class="bold" style="font-size: 1.2em;">Sharpa Functional Grasping</span><br>
+                    10 grasps | 10 objects<br>
+                    Success Rate: <span class="bold">10 / 10</span>
+                </div>
+                <div class="conditioning-media">
+                    <video autoplay loop muted playsinline class="lazy">
+                        <source data-src="videos/long_horizon/fg_sharpa_trim.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="conditioning-media">
+                    <img src="videos/long_horizon/sharpa_fg.png" alt="Sharpa Functional Grasping still" loading="lazy">
+                </div>
+                <div class="long-horizon-youtube">
+                    <iframe src="https://www.youtube.com/embed/ISBk6qW3Gs4?si=UyLzXqmUx3HGRbNx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div>
+        <h2>Grasp Conditioning</h2>
+        <div class="figure-caption">
+            <span class="bold blue">Conditioning Signals.</span> Our functional grasping policy is conditioned on <span class="bold">four signals</span> that together specify <span class="italic">where</span> and <span class="italic">how</span> to grasp an object:
+            <span class="italic">(i)</span> <span class="bold">Segmented point cloud</span> — which object region to grasp and which to ignore;
+            <span class="italic">(ii)</span> <span class="bold">Wrist orientation</span> — desired approach orientation of the wrist;
+            <span class="italic">(iii)</span> <span class="bold">Keypoint</span> — desired contact location on the visible object surface;
+            <span class="italic">(iv)</span> <span class="bold">Grasp template</span> — target joint configuration of the hand.
+            Segment, wrist, and keypoint conditioning are visualized below.
+        </div>
+        <div class="conditioning_modes">
+            <div class="conditioning_mode">
+                <div class="conditioning_mode-name"><i>(i)</i> <span class="bold">Segment Conditioning</span></div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/mug_1_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/mug_2_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/tape_1_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/tape_2_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+            </div>
+            <div class="conditioning_mode">
+                <div class="conditioning_mode-name"><i>(ii)</i> <span class="bold">Wrist Orientation Conditioning</span></div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/angle_1_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/angle_2_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/angle_3_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/angle_4_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+            </div>
+            <div class="conditioning_mode">
+                <div class="conditioning_mode-name"><i>(iii)</i> <span class="bold">Keypoint Conditioning</span></div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/keypoint_1_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/keypoint_2_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+                <div class="conditioning_mode-row">
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/keypoint_3_trim_overlay.mp4" type="video/mp4"></video>
+                    <video autoplay loop muted playsinline class="lazy"><source data-src="videos/conditioning/keypoint_4_trim_overlay.mp4" type="video/mp4"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div>
+        <h2>Learning from One Demonstration</h2>
+        <div class="figure-caption">
+            <span class="bold blue">Real World Tasks.</span> We collect one demonstration per task, and use our functional grasping policy to augment the single trajectory into 200 diverse training episodes. We visualize 3 trajectories for each task below. Videos are at 10x speed.
+        </div>
+        <div class="closed-loop-grid">
+            <div class="closed-loop-task">
+                <div class="closed-loop-task-name"><span class="rollout-domain">Mug on Peg</span></div>
+                <div class="closed-loop-row">
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/mug_cl_v1.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/mug_cl_v2.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/mug_cl_v3.mp4" type="video/mp4"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="closed-loop-grid">
+            <div class="closed-loop-task">
+                <div class="closed-loop-task-name"><span class="rollout-domain">Pen Writing</span></div>
+                <div class="closed-loop-row">
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/pen_cl_v1.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/pen_cl_v2.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/pen_cl_v3.mp4" type="video/mp4"></video>
+                    </div>
+                </div>
+            </div>
+            <div class="closed-loop-task">
+                <div class="closed-loop-task-name"><span class="rollout-domain">Dispense Syringe</span></div>
+                <div class="closed-loop-row">
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/syringe_cl_v1.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/syringe_cl_v2.mp4" type="video/mp4"></video>
+                    </div>
+                    <div class="closed-loop-side">
+                        <video autoplay loop muted playsinline class="lazy"><source data-src="videos/closed_loop/syringe_cl_v3.mp4" type="video/mp4"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div style="margin: auto; margin-bottom: 64px; text-align: center;">
+        <h2>Paper</h2>
+        <span class="bold">SNAP: One-Shot Dexterous Manipulation via Functional Grasping Policies</span><br/>
+        <span class="italic">Anonymous Authors</span><br/><br/>
+        13 pages<br/><br/>
+        
+        <div class="thumbnails">
+            <img class="page" src="thumbnails/01.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 1">
+            <img class="page" src="thumbnails/02.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 2">
+            <img class="page" src="thumbnails/03.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 3">
+            <img class="page" src="thumbnails/04.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 4">
+            <img class="page" src="thumbnails/05.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 5">
+            <img class="page" src="thumbnails/06.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 6">
+            <img class="page" src="thumbnails/07.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 7">
+            <img class="page" src="thumbnails/08.png" loading="lazy" style="width:100px; height:auto; margin:5px;" alt="Page 8">
+        </div>
+        <div style="margin: auto; margin-top: 24px;">
+            <a href="https://openreview.net/forum?id=5zEr48929G">View on OpenReview</a>
+        </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div style="padding-bottom: 64px; text-align: center;">
+        <h2>Citation</h2>
+        <p>If you find our work useful, please consider citing the paper as follows:</p>
+        <div id="bibtex-text" class="bibtexsection" onClick="window.getSelection().selectAllChildren(document.getElementById('bibtex-text'));">@misc{Anonymous2026SNAP,
+    title={SNAP: One-Shot Dexterous Manipulation via Functional Grasping Policies},
+    author={Anonymous Authors},
+    booktitle={Conference on Robot Learning (Submission)},
+    year={2026}
+}</div>
+    </div>
+</div>
+
+<footer>
+    <a href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>
+    <div style="padding-top: 48px;">
+        <span>This website has been anonymized in compliance with CoRL 2026 submission guidelines.</span>
+    </div>
+</footer>
+
+</body>
+</html>
